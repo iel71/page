@@ -1,15 +1,23 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { getFaqByTab, getDataBySubTab } from '../api/tab'
-
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '../components/ui/accordion'
+import Modal from './Modal'
 export default function FaqClient() {
   const [tab, setTab] = useState('CONSULT')
   const [subTabName, setSubTabName] = useState('전체')
   const [tabData, setTabData] = useState([])
   const [subTabData, setSubTabData] = useState({})
   const [input, setInput] = useState('')
+  const [searchInfo, setSearchInfo] = useState(false)
 
   const [openIndex, setOpenIndex] = useState(null)
+  const [modal, setModal] = useState(false)
 
   const tabDataFn = (tab) => {
     setTab(tab)
@@ -32,11 +40,30 @@ export default function FaqClient() {
   const inputHandler = (e) => {
     setInput(e.target.value)
   }
-
-  const toggleHandler = (index) => {
-    setOpenIndex((prev) => (prev === index ? null : index))
+  const resetHandler = () => {
+    setInput('')
+    setSearchInfo(false)
   }
 
+  const searchHandler = () => {
+    if (input.length === 0) {
+      return
+    }
+    if (input.length === 1) {
+      setSearchInfo(false)
+      setModal(true)
+      return
+    }
+
+    // if (input.length === 1) {
+    //   setErrorText(true)
+    //   return
+    // }
+    // setOffset(0)
+    // setIsNext(false)
+    setSearchInfo(true)
+    // setFaqList([])
+  }
   useEffect(() => {
     const timer = setTimeout(() => {
       tabDataFn('CONSULT')
@@ -85,23 +112,32 @@ export default function FaqClient() {
               placeholder="찾으시는 내용을 입력해 주세요"
               value={input}
               onChange={inputHandler}
+              onKeyUp={(e) => {
+                if (e.key === 'Enter') {
+                  searchHandler()
+                }
+              }}
             />
-            <button>
+
+            <button onClick={searchHandler}>
               검색
               <img src="/images/icon_search.svg" alt="검색 아이콘 이미지" />
             </button>
           </div>
         </div>
       </form>
-      <div className="data-info">
-        <h2>
-          검색결과 총<strong>{subTabData?.items?.length || 0}</strong>건
-        </h2>
-        <button className="reset">
-          <img src="/images/icon_reset.svg" alt="리셋 아이콘 이미지" />
-          검색초기화
-        </button>
-      </div>
+
+      {searchInfo && (
+        <div className="data-info">
+          <p>
+            검색결과 총 <strong>{subTabData?.items?.length || 0}</strong>건
+          </p>
+          <button className="reset" onClick={resetHandler}>
+            <img src="/images/icon_reset.svg" alt="리셋 아이콘 이미지" />
+            검색초기화
+          </button>
+        </div>
+      )}
 
       {/* 서브 탭 UI */}
       <div className="sub-tab-list">
@@ -126,29 +162,53 @@ export default function FaqClient() {
             </li>
           ))}
         </ul>
-        <ul className="sub-tab-data">
-          {subTabData?.items?.map((item, index) => (
-            <li key={item.id} onClick={() => toggleHandler(index)}>
-              <div
-                className={`toggle-area ${openIndex === index ? 'active' : ''}`}
+
+        <Accordion type="single" collapsible className="sub-tab-data">
+          {subTabData && subTabData.items && subTabData.items.length === 0 ? (
+            <div className="no-data">
+              <img
+                src="/images/icon_nodata.svg"
+                alt="데이터 없음 아이콘 이미지"
+              />
+              검색결과가 없습니다.
+            </div>
+          ) : (
+            subTabData?.items?.map((item, index) => (
+              <AccordionItem
+                value={item.id}
+                className="toggle-area"
+                key={index}
               >
-                <span>
-                  {tab == 'CONSULT' ? item.subCategoryName : item.categoryName}
-                </span>
-                {tab == 'USAGE' && <span>{item.subCategoryName}</span>}
-                <strong>{item.question}</strong>
-                <img src="/images/icon_arrow.svg" alt="화살표 아이콘 이미지" />
-              </div>
-              {openIndex === index && (
-                <div
-                  className={`toggle-text ${openIndex === index ? 'open' : ''}`}
-                  dangerouslySetInnerHTML={{ __html: item.answer }}
-                ></div>
-              )}
-            </li>
-          ))}
-        </ul>
+                <AccordionTrigger>
+                  <div
+                    className={`toggle-area ${
+                      openIndex === index ? 'active' : ''
+                    }`}
+                  >
+                    <span>
+                      {tab == 'CONSULT'
+                        ? item.subCategoryName
+                        : item.categoryName}
+                    </span>
+                    {tab == 'USAGE' && <span>{item.subCategoryName}</span>}
+                    <strong>{item.question}</strong>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div
+                    className={`toggle-text ${
+                      openIndex === index ? 'open' : ''
+                    }`}
+                    dangerouslySetInnerHTML={{ __html: item.answer }}
+                  ></div>
+                </AccordionContent>
+              </AccordionItem>
+            ))
+          )}
+        </Accordion>
       </div>
+
+      <Modal open={modal} onOpenChange={setModal} />
     </>
   )
 }
