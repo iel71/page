@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { getFaqByTab, getDataBySubTab } from '../api/tab'
 import {
   Accordion,
@@ -8,10 +8,11 @@ import {
   AccordionTrigger,
 } from '../components/ui/accordion'
 import Modal from './Modal'
+
 export default function FaqClient() {
-  const [tab, setTab] = useState('CONSULT')
+  const [tab, setTab] = useState('CONSULT') //CONSULT or USAGE
   const [subTabName, setSubTabName] = useState('전체')
-  const [tabData, setTabData] = useState([])
+  const [tabData, setTabData] = useState([]) // CONSULT or USAGE 탭에 따른 전체 데이터 가져오기
   const [subTabData, setSubTabData] = useState({})
   const [input, setInput] = useState('')
   const [searchInfo, setSearchInfo] = useState(false)
@@ -19,21 +20,21 @@ export default function FaqClient() {
   const [openIndex, setOpenIndex] = useState(null)
   const [modal, setModal] = useState(false)
 
+  const [limit] = useState(10)
+  const [offset, setOffset] = useState(0)
+  // const [loading, setLoading] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+
   const tabDataFn = (tab) => {
     setTab(tab)
-    getFaqByTab(tab).then((res) => {
+    setSubTabName('전체')
+    setOffset(0)
+    setHasMore(true)
+    getFaqByTab(tab, offset, limit).then((res) => {
+      console.log(',,,,,텝리스트 ', res)
       setTabData(res)
-      setSubTabName('전체')
-      console.log('Fetched getFaqByTab data!!', res)
-    })
-  }
-  const subTabDataFn = (tab, tabItem) => {
-    console.log(',,', tab, tabItem)
-    setSubTabName(tabItem)
-    getDataBySubTab(tab, tabItem).then((res) => {
-      setSubTabData(res)
 
-      console.log('Fetched getDataBySubTab data!!', res)
+      console.log('Fetched getFaqByTab data!!', res)
     })
   }
 
@@ -55,15 +56,41 @@ export default function FaqClient() {
       return
     }
 
-    // if (input.length === 1) {
-    //   setErrorText(true)
-    //   return
-    // }
-    // setOffset(0)
-    // setIsNext(false)
     setSearchInfo(true)
-    // setFaqList([])
   }
+
+  // subTabDataFn 함수 정의
+  const subTabDataFn = (tab, subTab) => {
+    console.log(',TabData@@@@@@', tab, subTab)
+    setOffset(0)
+    setSubTabName(subTab)
+
+    getDataBySubTab(tab, subTab, 0, limit).then((res) => {
+      console.log(',,,,,데이터리스트@!!!!', res)
+      if (offset === 0) {
+        setSubTabData(res)
+      } else {
+        setSubTabData({ ...subTabData, res })
+      }
+
+      if (res.pageInfo.nextOffset === offset) {
+        setHasMore(false)
+      } else {
+        setHasMore(true)
+        setOffset(res.pageInfo.nextOffset)
+      }
+      console.log('Fetched getDataBySubTab data!!', res)
+    })
+  }
+  const loadMore = () => {
+    setOffset((prevOffset) => prevOffset + 10) // offset 증가
+  }
+
+  useEffect(() => {
+    if (offset === 0) return
+    subTabDataFn(tab, subTabName)
+  }, [offset, tab, subTabName])
+
   useEffect(() => {
     const timer = setTimeout(() => {
       tabDataFn('CONSULT')
@@ -206,6 +233,14 @@ export default function FaqClient() {
             ))
           )}
         </Accordion>
+        <button type="button" className="list-more" onClick={loadMore}>
+          + 더보기
+        </button>
+        {/* {hasMore && (
+          <button type="button" className="list-more" onClick={loadMore}>
+            + 더보기
+          </button>
+        )} */}
       </div>
 
       <Modal open={modal} onOpenChange={setModal} />

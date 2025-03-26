@@ -1,6 +1,6 @@
 import MswProvider from '@/components/mswProvider'
 import '../../styles/globals.scss'
-import '../lib/common'
+
 export const metadata = {
   title: '서비스 도입 FAQ | 위블 비즈(Wible Biz) - 친환경 모빌리티 서비스',
   description:
