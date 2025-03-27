@@ -6,13 +6,12 @@ import { usageDataList } from './data/usageDataList'
 import { consultDataList } from './data/consultDataList'
 
 export const handlers = [
-  //메인 탭 API
+  //메인 탭 리스트 API
   rest.get('/tab', (req, res, ctx) => {
     const url = new URL(req.url, `http://${req.headers.host}`)
     const categoryID = url.searchParams.get('categoryID')
-    const limit = parseInt(url.searchParams.get('limit')) || 10
-    const offset = parseInt(url.searchParams.get('offset')) || 0
 
+    console.log(',*************', categoryID)
     let dataList = []
 
     if (categoryID === 'CONSULT') {
@@ -21,33 +20,33 @@ export const handlers = [
       dataList = usageTabList
     }
 
-    const slicedData = dataList.slice(offset, offset + limit)
-
-    return res(ctx.status(200), ctx.json(slicedData))
+    return res(ctx.status(200), ctx.json(dataList))
   }),
 
-  //서브 탭 API
+  //서브 탭 클릭 후 데이터 호출 API
   rest.get('/subTab', (req, res, ctx) => {
     const url = new URL(req.url, `http://${req.headers.host}`)
     const tab = url.searchParams.get('tab')
-    const subTab = url.searchParams.get('subTab')
+    const subTabName = url.searchParams.get('subTabName')
+    const searchText = url.searchParams.get('searchText')
     const limit = parseInt(url.searchParams.get('limit')) || 10
     let offset = parseInt(url.searchParams.get('offset')) || 0
 
+    console.log(',*************', tab, subTabName)
     let filtered = []
     let dataList = []
     if (tab === 'CONSULT') {
       dataList = consultDataList.items
       filtered =
-        subTab === '전체'
+        subTabName === '전체'
           ? dataList
-          : dataList.filter((item) => item.subCategoryName === subTab)
+          : dataList.filter((item) => item.subCategoryName === subTabName)
     } else if (tab === 'USAGE') {
       dataList = usageDataList.items
       filtered =
-        subTab === '전체'
+        subTabName === '전체'
           ? dataList
-          : dataList.filter((item) => item.categoryName === subTab)
+          : dataList.filter((item) => item.categoryName === subTabName)
     }
 
     const slicedData = filtered.slice(offset, offset + limit)

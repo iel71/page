@@ -14,28 +14,34 @@ export default function FaqClient() {
   const [subTabName, setSubTabName] = useState('전체')
   const [tabData, setTabData] = useState([]) // CONSULT or USAGE 탭에 따른 전체 데이터 가져오기
   const [subTabData, setSubTabData] = useState({})
-  const [input, setInput] = useState('')
-  const [searchInfo, setSearchInfo] = useState(false)
+  const [faqList, setFaqList] = useState([])
 
-  const [openIndex, setOpenIndex] = useState(null)
+  const [input, setInput] = useState('') // 검색 텍스트
+  const [searchInfo, setSearchInfo] = useState(false) // 입력값을 1글자 입력했을 때를 위한 상태
+  const [isNoData, setIsNoData] = useState(false)
+  const [openIndex] = useState(null) //아코디언 컴포넌트에 사용하는 상태
   const [modal, setModal] = useState(false)
 
   const [limit] = useState(10)
+  const [totalRecord, setTotalRecord] = useState(0)
+
   const [offset, setOffset] = useState(0)
+
   // const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState(true)
 
-  const tabDataFn = (tab) => {
-    setTab(tab)
+  const tabDataFn = () => {
     setSubTabName('전체')
     setOffset(0)
-    setHasMore(true)
-    getFaqByTab(tab, offset, limit).then((res) => {
-      console.log(',,,,,텝리스트 ', res)
-      setTabData(res)
-
-      console.log('Fetched getFaqByTab data!!', res)
-    })
+    // setHasMore(true)
+    getFaqByTab(tab)
+      .then((res) => {
+        console.log(',,,,,텝리스트 Fetched getFaqByTab data!!', res)
+        setTabData(res)
+      })
+      .then(() => {
+        subTabDataFn2()
+      })
   }
 
   const inputHandler = (e) => {
@@ -60,41 +66,77 @@ export default function FaqClient() {
   }
 
   // subTabDataFn 함수 정의
-  const subTabDataFn = (tab, subTab) => {
-    console.log(',TabData@@@@@@', tab, subTab)
-    setOffset(0)
-    setSubTabName(subTab)
+  // const subTabDataFn = (tab, subTab) => {
+  //   console.log(',TabData@@@@@@', tab, subTab)
+  //   setOffset(0)
+  //   setSubTabName(subTab)
 
-    getDataBySubTab(tab, subTab, 0, limit).then((res) => {
-      console.log(',,,,,데이터리스트@!!!!', res)
-      if (offset === 0) {
-        setSubTabData(res)
-      } else {
-        setSubTabData({ ...subTabData, res })
-      }
+  //   getDataBySubTab(tab, subTab, 0, limit).then((res) => {
+  //     console.log(',,,,,데이터리스트@!!!!', res)
+  //     if (offset === 0) {
+  //       setSubTabData(res)
+  //     } else {
+  //       setSubTabData({ ...subTabData, res })
+  //     }
 
-      if (res.pageInfo.nextOffset === offset) {
-        setHasMore(false)
+  //     if (res.pageInfo.nextOffset === offset) {
+  //       setHasMore(false)
+  //     } else {
+  //       setHasMore(true)
+  //       setOffset(res.pageInfo.nextOffset)
+  //     }
+  //     console.log('Fetched getDataBySubTab data!!', res)
+  //   })
+  // }
+
+  const subTabDataFn2 = () => {
+    // setIsLoading(true)
+
+    getDataBySubTab(tab, subTabName, offset, input).then((res) => {
+      console.log(',res', res)
+      if (res && res.items.length > 0) {
+        setIsNoData(false)
+        setFaqList(faqList.concat(res.items))
+        setTotalRecord(res.pageInfo.totalRecord)
+        if (res.pageInfo.nextOffset === offset) {
+          setHasMore(false)
+        } else {
+          setHasMore(true)
+          setOffset(res.pageInfo.nextOffset)
+        }
       } else {
-        setHasMore(true)
-        setOffset(res.pageInfo.nextOffset)
+        setIsNoData(true)
+        setTotalRecord(0)
       }
-      console.log('Fetched getDataBySubTab data!!', res)
     })
+
+    // setIsLoading(false)
   }
+
   const loadMore = () => {
     setOffset((prevOffset) => prevOffset + 10) // offset 증가
   }
 
   useEffect(() => {
+    if (faqList.length > 0 || isNoData) {
+      setOffset(0)
+      setHasMore(false)
+      // setIsSearch(false)
+      setSubTabName('전체')
+      setInput('')
+      setFaqList([])
+    }
+  }, [tab])
+
+  useEffect(() => {
     if (offset === 0) return
-    subTabDataFn(tab, subTabName)
+    subTabDataFn2()
   }, [offset, tab, subTabName])
 
   useEffect(() => {
     const timer = setTimeout(() => {
       tabDataFn('CONSULT')
-      subTabDataFn('CONSULT', '전체')
+      // subTabDataFn2()
     }, 100)
 
     return () => clearTimeout(timer)
@@ -107,8 +149,10 @@ export default function FaqClient() {
         <li className={tab === 'CONSULT' ? 'active' : ''}>
           <button
             onClick={() => {
-              tabDataFn('CONSULT')
-              subTabDataFn('CONSULT', '전체')
+              // tabDataFn('CONSULT')
+              setTab('CONSULT')
+              tabDataFn()
+              subTabDataFn2()
             }}
           >
             서비스 도입
@@ -117,8 +161,10 @@ export default function FaqClient() {
         <li className={tab === 'USAGE' ? 'active' : ''}>
           <button
             onClick={() => {
-              tabDataFn('USAGE')
-              subTabDataFn('USAGE', '전체')
+              // tabDataFn('USAGE')
+              setTab('USAGE')
+              tabDataFn()
+              subTabDataFn2()
             }}
           >
             서비스 이용
@@ -172,7 +218,8 @@ export default function FaqClient() {
           <li className={subTabName === '전체' ? 'active' : ''}>
             <button
               onClick={() => {
-                subTabDataFn(tab, '전체')
+                setSubTabName('전체')
+                subTabDataFn2()
               }}
             >
               전체
@@ -183,7 +230,13 @@ export default function FaqClient() {
               key={item.categoryID}
               className={subTabName === item.name ? 'active' : ''}
             >
-              <button onClick={() => subTabDataFn(tab, item.name)}>
+              <button
+                onClick={() => {
+                  setSubTabName(item.name)
+
+                  subTabDataFn2()
+                }}
+              >
                 {item.name}
               </button>
             </li>
@@ -200,7 +253,7 @@ export default function FaqClient() {
               검색결과가 없습니다.
             </div>
           ) : (
-            subTabData?.items?.map((item, index) => (
+            faqList?.map((item, index) => (
               <AccordionItem
                 value={item.id}
                 className="toggle-area"
