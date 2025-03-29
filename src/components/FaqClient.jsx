@@ -27,6 +27,7 @@ export default function FaqClient() {
   const [offset, setOffset] = useState(0)
   const [hasMore, setHasMore] = useState(true)
 
+  const [loading, setLoading] = useState(false)
   //초기 로딩
   useEffect(() => {
     getTabData()
@@ -54,7 +55,7 @@ export default function FaqClient() {
 
   //서브 탭 데이터 호출
   useEffect(() => {
-    if (subTabData.length === 0) {
+    if (!loading && subTabData.length === 0) {
       getSubTabData()
     }
   }, [subTabData])
@@ -73,6 +74,8 @@ export default function FaqClient() {
 
   // 서브 탭 API 호출
   async function getSubTabData() {
+    if (loading) return
+    setLoading(true)
     const result = await getDataBySubTab({ tab, subTab, offset, limit, input })
 
     if (result && result.items.length > 0) {
@@ -89,7 +92,9 @@ export default function FaqClient() {
     } else {
       setIsNoData(true)
       setTotalRecord(0)
+      setLoading(false)
     }
+    setLoading(false)
   }
 
   // 검색 버튼
@@ -148,6 +153,7 @@ export default function FaqClient() {
       <form
         onSubmit={(e) => {
           e.preventDefault()
+          searchHandler()
         }}
       >
         <div className="input-area">
@@ -157,12 +163,6 @@ export default function FaqClient() {
               placeholder="찾으시는 내용을 입력해 주세요"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyUp={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault()
-                  searchHandler()
-                }
-              }}
             />
             {input.length > 1 && (
               <button
