@@ -479,8 +479,10 @@ header {
         padding: var(--faq-list-padding-v) 0;
         align-items: center;
         .toggle-area {
+          display: flex;
+          align-items: center;
+          width: 100%;
           span {
-            display: inline-block;
             width: 200px;
             text-align: center;
             color: #697278;
@@ -492,6 +494,8 @@ header {
           }
           strong {
             flex: 1 1;
+            padding-right: 30px;
+            line-height: var(--line-height-sm);
           }
         }
 
@@ -990,6 +994,7 @@ footer {
     strong {
       width: 100%;
       flex: none;
+      padding-right: 16px;
     }
   }
 
