@@ -26,7 +26,7 @@ export default function Home() {
             <div className="inquiry-area">
               <a
                 className="btn-tertiary"
-                href="../../public/proposal.pdf"
+                href="/proposal.pdf"
                 download="위블비즈 상품제안서"
               >
                 <img src="/images/icon_download.svg" alt="다운로드 아이콘" />
