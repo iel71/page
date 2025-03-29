@@ -27,10 +27,10 @@ export default function Home() {
               <a
                 className="btn-tertiary"
                 href="/proposal.pdf"
-                download="위블비즈 상품제안서"
+                download="기아 비즈 서비스 제안서"
               >
                 <img src="/images/icon_download.svg" alt="다운로드 아이콘" />
-                <span>상품제안서 다운로드</span>
+                <span>서비스 제안서 다운로드</span>
               </a>
               <a
                 className=" btn-tertiary"
