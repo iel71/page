@@ -11,8 +11,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <MswProvider />
-        {children}
+        <MswProvider> {children}</MswProvider>
       </body>
     </html>
   )

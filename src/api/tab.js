@@ -1,7 +1,6 @@
 import axios from '../lib/axios'
 
 export async function getFaqByTab(categoryID) {
-  console.log('categoryID', categoryID)
   const res = await axios.get('/tab', {
     params: {
       categoryID,
@@ -10,10 +9,9 @@ export async function getFaqByTab(categoryID) {
   return res.data
 }
 
-export async function getDataBySubTab(tab, subTabName, offset, limit) {
-  console.log('params!!!!', subTabName)
+export async function getDataBySubTab({ tab, subTab, offset, limit, input }) {
   const res = await axios.get('/subTab', {
-    params: { tab, subTabName, offset, limit },
+    params: { tab, subTab, offset, limit, input },
   })
   return res.data
 }

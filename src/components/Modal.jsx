@@ -1,4 +1,3 @@
-// components/MyModal.jsx
 'use client'
 
 import { useState } from 'react'

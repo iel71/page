@@ -15,6 +15,7 @@
 @media (max-width: 743px) {
   :root {
     font-size: 14px;
+    --logo-width: 110px;
     --header-height: 56px;
     --px-lg: 24px;
     --h1-height: 124px;
@@ -30,7 +31,7 @@
     --btn-md: 36px;
     --btn-xxlg: 72px;
     --space-md: 16px;
-    --search-bar-width: 400px;
+    --search-bar-width: 100%;
     --faq-list-a-size: 16px;
     --faq-list-q-padding: 16px 0;
     --faq-list-padding-v: 16px;
@@ -48,11 +49,12 @@
 @media (min-width: 744px) and (max-width: 1023px) {
   :root {
     font-size: 16px;
+    --logo-width: 120px;
     --header-height: 56px;
     --px-lg: 32px;
     --h1-height: 160px;
     --h1-fsize: 40px;
-    --h1-fsize-sm: 14px;
+    --h1-fsize-sm: 16px;
     --heading-2: 24px;
     --heading-2-margin: 48px 0 24px;
     --heading-info: 18px;
@@ -63,7 +65,7 @@
     --btn-md: 44px;
     --btn-xxlg: 80px;
     --space-md: 24px;
-    --search-bar-width: 400px;
+    --search-bar-width: 100%;
     --faq-list-q-padding: 24px 24px;
     --faq-list-padding-v: 24px;
     --ic-md: 28px;
@@ -80,11 +82,12 @@
 @media (min-width: 1024px) and (max-width: 1439px) {
   :root {
     font-size: 18px;
+    --logo-width: 140px;
     --header-height: 80px;
     --px-lg: 40px;
     --h1-height: 192px;
     --h1-fsize: 48px;
-    --h1-fsize-sm: 16px;
+    --h1-fsize-sm: 18px;
     --heading-2: 24px;
     --heading-2-margin: 48px 0 24px;
     --btn-xlg2: 56px;
@@ -95,7 +98,7 @@
     --btn-md: 48px;
     --btn-xxlg: 80px;
     --space-md: 24px;
-    --search-bar-width: 480px;
+    --search-bar-width: 100%;
     --faq-list-a-size: 18px;
     --faq-list-q-padding: 24px 32px;
     --faq-list-padding-v: 18px;
@@ -112,11 +115,12 @@
 @media (min-width: 1440px) {
   :root {
     font-size: 18px;
+    --logo-width: 140px;
     --header-height: 80px;
     --px-lg: 48px;
     --h1-height: 222px;
     --h1-fsize: 56px;
-    --h1-fsize-sm: 18px;
+    --h1-fsize-sm: 20px;
     --heading-2: 24px;
     --heading-2-margin: 64px 0 24px;
     --btn-xlg2: 56px;
@@ -127,7 +131,7 @@
     --btn-md: 48px;
     --btn-xxlg: 80px;
     --space-md: 32px;
-    --search-bar-width: 480px;
+    --search-bar-width: 100%;
     --faq-list-a-size: 20px;
     --faq-list-q-padding: 32px 40px;
     --faq-list-padding-v: 24px;
@@ -174,8 +178,9 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: 'NanumSquare', Arial, Helvetica, sans-serif;
+  min-width: 360px;
+  overflow: auto;
 }
-
 * {
   box-sizing: border-box;
   padding: 0;
@@ -194,12 +199,13 @@ body.open {
   overflow: hidden;
   height: 100vh;
 }
+
 header {
   position: sticky;
   top: 0;
   z-index: 100;
   height: var(--header-height);
-  padding: 0 48px;
+  padding: 0 var(--side-padding);
   display: flex;
   align-items: center;
   margin: 0 auto;
@@ -208,7 +214,7 @@ header {
   a {
     height: 100%;
     &.logo {
-      width: 160px;
+      width: var(--logo-width);
       display: block;
       height: 100%;
       font-size: 0;
@@ -217,7 +223,6 @@ header {
       img {
         object-fit: contain;
         width: 100%;
-        height: 100%;
       }
     }
   }
@@ -225,13 +230,8 @@ header {
     flex: 1 1;
     height: 100%;
     ul {
-      // display: flex;
-      // justify-content: flex-end;
-      // height: 100%;
-      // align-items: center;
       li {
         margin: 0 16px;
-        // height: 100%;
         a {
           display: block;
           font-size: 18px;
@@ -262,11 +262,13 @@ header {
     }
   }
 }
+
 .container-area {
   min-height: calc(100vh - (80px - 176px));
   overflow: hidden;
   padding: 0 var(--side-padding) var(--bottom-padding);
   margin: 0 auto;
+  position: relative;
   .content {
     margin: 0 auto;
     max-width: 1240px;
@@ -280,7 +282,7 @@ header {
       font-weight: bold;
       p {
         font-size: var(--h1-fsize-sm);
-        margin-top: 20px;
+        margin-top: 0.4em;
         font-weight: 400;
       }
     }
@@ -296,7 +298,6 @@ header {
         flex: 1 1;
         min-height: var(--btn-xlg2);
         border: 1px solid var(--midnight-100);
-
         button {
           color: block;
           display: flex;
@@ -373,6 +374,10 @@ header {
               height: 32px;
               object-fit: contain;
             }
+            &.delete {
+              right: 50px;
+              width: 24px;
+            }
           }
         }
       }
@@ -426,7 +431,7 @@ header {
             cursor: pointer;
           }
           &.active {
-            background: var(--mint-900);
+            background: var(--foreground);
             button {
               color: #fff;
             }
@@ -523,10 +528,10 @@ header {
     }
   }
 }
+
 .inquiry-area {
   display: flex;
   margin: 0 calc(var(--space-md) * -1 / 2);
-  // gap: 10px;
   a {
     height: var(--btn-xxlg);
     min-height: var(--btn-xxlg);
@@ -552,6 +557,7 @@ header {
     }
   }
 }
+
 .process-area {
   counter-reset: li;
   display: flex;
@@ -594,6 +600,7 @@ header {
     }
   }
 }
+
 .app-area {
   background-color: #f8f8f8;
   border-radius: 16px;
@@ -633,6 +640,46 @@ header {
     }
   }
 }
+
+.top-button {
+  bottom: 30px;
+  right: 30px;
+  pointer-events: none;
+  position: fixed;
+  transform-origin: 100% 100%;
+  z-index: 99;
+  // width: 56px;
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    pointer-events: all;
+    margin-top: 8px;
+    font-size: 0;
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.12);
+    transform: scale(0);
+    opacity: 0;
+
+    transition-property: width, height, background-position, transform, opacity;
+    transition-duration: 0.4s;
+    transition-timing-function: var(--cubic-bezier-primary);
+    img {
+      width: 28px;
+    }
+  }
+  &.show button {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 footer {
   background-color: #05141f;
   color: #82898f;
@@ -682,10 +729,8 @@ footer {
   }
 }
 
-// 미디어쿼리
 @media (max-width: 743px) {
   .container-area .content h2 {
-    // margin-bottom: 4px;
     line-height: var(--line-height-sm);
   }
   .inquiry-area {
@@ -723,7 +768,13 @@ footer {
     max-width: 264px;
     width: 100%;
   }
-
+  .top-button button {
+    width: 32px;
+    height: 32px;
+    img {
+      width: 20px;
+    }
+  }
   footer {
     .footer-area {
       flex-direction: column;
@@ -752,6 +803,7 @@ footer {
     }
   }
 }
+
 @media (min-width: 744px) and (max-width: 1023px) {
   .container-area .content h2 {
     font-size: 20px;
@@ -774,7 +826,13 @@ footer {
       }
     }
   }
-
+  .top-button button {
+    width: 44px;
+    height: 44px;
+    img {
+      width: 25px;
+    }
+  }
   footer {
     .footer-area {
       flex-direction: column;
@@ -801,6 +859,7 @@ footer {
     }
   }
 }
+
 @media (max-width: 1023px) {
   header {
     nav {
@@ -894,8 +953,6 @@ footer {
   .open header {
     nav {
       margin-left: 100%;
-      ul {
-      }
     }
     button {
       background-position: 30px 0;
@@ -909,6 +966,8 @@ footer {
   }
   .container-area .content .sub-tab-data button .toggle-area {
     flex-wrap: wrap;
+    width: 100%;
+    display: flex;
     span {
       align-items: center;
       display: flex;
@@ -928,6 +987,10 @@ footer {
         opacity: 0.3;
       }
     }
+    strong {
+      width: 100%;
+      flex: none;
+    }
   }
 
   .process-area {
@@ -940,10 +1003,8 @@ footer {
       }
     }
   }
-  // footer address span {
-  //   margin-left: 12px;
-  // }
 }
+
 @media (min-width: 1440px) {
   .app-area {
     margin-top: 64px;
@@ -964,10 +1025,9 @@ footer {
     }
   }
 }
+
 @media (min-width: 744px) {
   footer {
-    // --font-md: 14px;
-    // --font-lg: 16px;
     --line-height: 24px;
   }
 }
@@ -997,7 +1057,6 @@ footer {
       }
       address {
         text-align: right;
-
         br:nth-of-type(1),
         br:nth-of-type(2),
         br:nth-of-type(3),

@@ -1,10 +1,13 @@
+import Footer from '@/components/Footer.jsx'
 import Header from '@/components/Header.jsx'
+import ScrollButton from '@/components/ScrollButton.jsx'
 import FaqClient from '../components/FaqClient.jsx'
 
 export default function Home() {
   return (
     <div id="root">
       <div className="wrapper">
+        {/* 해더 */}
         <Header />
 
         {/* 컨테이너 */}
@@ -25,7 +28,6 @@ export default function Home() {
                 className="btn-tertiary"
                 href="../../public/proposal.pdf"
                 download="위블비즈 상품제안서"
-                title="상품제안서 다운로드"
               >
                 <img src="/images/icon_download.svg" alt="다운로드 아이콘" />
                 <span>상품제안서 다운로드</span>
@@ -33,7 +35,7 @@ export default function Home() {
               <a
                 className=" btn-tertiary"
                 href="https://wiblebiz.kia.com/Counsel"
-                title="상담문의 등록하기"
+                target={'_blank'}
               >
                 <img src="/images/icon_write.svg" alt="등록하기 아이콘" />
                 <span>상담문의 등록하기</span>
@@ -43,7 +45,6 @@ export default function Home() {
                 href="https://pf.kakao.com/_xfLxjdb"
                 target="_blank"
                 rel="noreferrer noopener"
-                title="카톡으로 문의하기"
               >
                 <img src="/images/icon_talk.svg" alt="카톡 아이콘" />
                 <span>
@@ -127,51 +128,13 @@ export default function Home() {
               </a>
             </div>
           </div>
+
+          {/* 위로가기 버튼 */}
+          <ScrollButton />
         </div>
 
         {/* 푸터 */}
-        <footer>
-          <div className="footer-area">
-            <div className="information">
-              <div className="link">
-                <button type="button">
-                  <b>개인정보 처리방침</b>
-                </button>
-                <button type="button">이용약관</button>
-              </div>
-              <address>
-                <span>
-                  서울특별시 서초구 헌릉로 12 <em>기아㈜</em>
-                </span>
-                <br />
-                <span>
-                  대표: <i>송호성, 최준영</i>
-                </span>
-                <br />
-                <span>
-                  사업자등록번호: <i>119-81-02316</i>
-                </span>
-                <br />
-                <span>
-                  통신판매번호: <i>2006-07935</i>
-                </span>
-                <br />
-                <span>
-                  고객센터: <i>1833-4964</i>
-                </span>
-                <br />
-                <span>
-                  제휴문의:
-                  <a href="mailto:wible.biz@kia.com">wible.biz@kia.com</a>
-                </span>
-              </address>
-            </div>
-            <p className="copyright">
-              <img src="/images/logo_kia.svg" alt="기아 로고 이미지" />© 2023
-              KIA CORP. All Rights Reserved.
-            </p>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </div>
   )
