@@ -646,7 +646,7 @@ header {
 }
 
 .top-button {
-  bottom: 30px;
+  bottom: 20px;
   right: 30px;
   pointer-events: none;
   position: fixed;
@@ -662,16 +662,13 @@ header {
     margin-top: 8px;
     font-size: 0;
     background-color: #fff;
-    background-repeat: no-repeat;
-    background-position: 50%;
     width: 56px;
     height: 56px;
     border-radius: 50%;
     box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.12);
-    transform: scale(0);
     opacity: 0;
-
-    transition-property: width, height, background-position, transform, opacity;
+    transform: translate(0, 10px) scale(0);
+    transition-property: transform, opacity;
     transition-duration: 0.4s;
     transition-timing-function: var(--cubic-bezier-primary);
     img {
@@ -680,7 +677,7 @@ header {
   }
   &.show button {
     opacity: 1;
-    transform: scale(1);
+    transform: translate(0, -20px) scale(1);
   }
 }
 

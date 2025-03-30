@@ -3,15 +3,14 @@ import React, { useEffect, useState } from 'react'
 
 export default function ScrollButton() {
   const [showButton, setShowButton] = useState(false)
-  const [isAboveFooter, setIsAboveFooter] = useState(false)
-  const [bottomOffset, setBottomOffset] = useState(30)
+  const [bottomOffset, setBottomOffset] = useState(20)
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY
       const viewportHeight = window.innerHeight
       const documentHeight = document.body.scrollHeight
-      const defaultOffset = 30
+      const defaultOffset = 20
 
       const rootStyles = getComputedStyle(document.documentElement)
       const footerHeightStr = rootStyles
