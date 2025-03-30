@@ -183,19 +183,17 @@ export default function FaqClient() {
         </div>
       </form>
 
-      {!isNoData && (
-        <div className="data-info">
-          <p>
-            총 <strong>{totalRecord || 0}</strong>건
-          </p>
-          {searchInfo && (
-            <button className="reset" onClick={resetHandler}>
-              <img src="/images/icon_reset.svg" alt="리셋 아이콘 이미지" />
-              검색초기화
-            </button>
-          )}
-        </div>
-      )}
+      <div className="data-info">
+        <p>
+          총 <strong>{totalRecord || 0}</strong>건
+        </p>
+        {searchInfo && (
+          <button className="reset" onClick={resetHandler}>
+            <img src="/images/icon_reset.svg" alt="리셋 아이콘 이미지" />
+            검색초기화
+          </button>
+        )}
+      </div>
 
       {/* ******* 서브 탭 UI ******* */}
       <div className="sub-tab-list">
